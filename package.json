@@ -1,0 +1,67 @@
+{
+  "name": "deep-fallback",
+  "version": "1.0.0",
+  "description": "Deep-fallback makes work with fallbacks enjoyable",
+  "main": "./lib/src/index.js",
+  "types": "./lib/src/index.d.ts",
+  "scripts": {
+    "lint": "eslint \"./src/**/*\" && tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "validate": "npm run lint && npm test",
+    "clean": "rimraf lib",
+    "prepublishOnly": "npm run validate && npm run clean && tsc"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run validate"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/null096/deep-fallback.git"
+  },
+  "files": [
+    "/lib/src",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "deep",
+    "fallback",
+    "object",
+    "dynamic",
+    "nested",
+    "proxy",
+    "get",
+    "default",
+    "params"
+  ],
+  "author": "Max Kanaradze",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/null096/deep-fallback/issues"
+  },
+  "homepage": "https://github.com/null096/deep-fallback#readme",
+  "devDependencies": {
+    "@types/is-object": "1.0.1",
+    "@types/jest": "25.2.1",
+    "@types/lodash.get": "4.4.6",
+    "@typescript-eslint/eslint-plugin": "2.27.0",
+    "@typescript-eslint/parser": "2.27.0",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.10.1",
+    "eslint-plugin-prettier": "3.1.2",
+    "husky": "4.2.5",
+    "jest": "25.2.7",
+    "prettier": "2.0.4",
+    "rimraf": "3.0.2",
+    "ts-jest": "25.3.1",
+    "typescript": "3.8.3"
+  },
+  "dependencies": {
+    "is-object": "1.0.1",
+    "is-regexp": "2.1.0",
+    "lodash.get": "4.4.2"
+  }
+}
