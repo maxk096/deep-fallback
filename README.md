@@ -82,7 +82,7 @@ console.log(myFallback.c); // <~ 3
 
 ### `createFallback(target, fallback, options?)`
 
-Creates deep fallback for objects. `createFallback` wrap a target in a [`Proxy`][proxy-url] and returns it. The rule of thumb here: **target and fallback must be objects**, so we can wrap it in Proxy. This rule can be partially bypassed with `options.fallbackImmediately`.
+Creates deep fallback for objects. `createFallback` wraps a target in a [`Proxy`][proxy-url] and returns it. The rule of thumb here: **target and fallback must be objects**, so we can wrap it in Proxy. This rule can be partially bypassed with `options.fallbackImmediately`.
 
 #### The flow of `createFallback`
 
@@ -227,6 +227,10 @@ console.log(fallback.b.nope);
 ### `createFallback.many(target, fallbacks, options?)`
 
 Works the same way as `createFallback`, but `fallbacks` parameter takes an array of fallbacks, not a single fallback.
+
+`fallbacks` array starts from high-priority fallbacks and ends with low-priority ones. In the example below, when we get `fallback.c` property, chain of fallbacks will look like:
+
+`{ a: 1 } -> { b: 2 } -> { c: 3 }`
 
 ```js
 import createFallback from 'deep-fallback';
