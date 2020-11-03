@@ -90,7 +90,7 @@ First, `createFallback` wraps a `target` in Proxy and listens to property access
 
 We will continue wrapping properties you access, until we encounter a primitive value which cannot be wrapped in Proxy. 
 
-By default, if a property does not exist or is set to `undefined`, fallback will triggered. This can be overridden using `options.shouldFallback`.
+By default, if a property does not exist or is set to `undefined`, fallback will be triggered. This can be overridden using `options.shouldFallback`.
 
 #### `target: any`
 
@@ -118,7 +118,7 @@ console.log(fallback); // <~ proxied `fallbackValue`
 
 #### `options.shouldFallback?: (value, target, path) => boolean`
 
-A function, which decides whether fallback should be applied or not. It will be called whenever a property path you want to access either equals to `undefined` or does not exist. By default, it will fallback if the value is set to `undefined` or does not exist.
+A function, which decides whether fallback should be applied or not. It will be called whenever you get a property. By default, it will fallback if the `value` is set to `undefined` or does not exist.
 
 **Note:** If a `value` is primitive, and you return `false`, which tells us to use the `value` as the next `target`. Then, the `target` will be returned without proxying, because it is not an object, and fallback **will not work**.
 
