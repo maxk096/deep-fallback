@@ -2,7 +2,7 @@
 
 Deep-fallback makes work with fallbacks enjoyable. Deep-fallback is a tiny library, that removes the handling of fallbacks and facilitates their usage on nested objects.
 
-[![License][license-image]][license-url] [![Downloads][downloads-image]][downloads-url] ![Coverage 100][coverage-badge]
+[![License][license-image]][license-url] [![Downloads][downloads-image]][downloads-url] ![Coverage 100][coverage-badge] ![Vulnerabilities][vulnerabilities-badge]
 
 ## Install
 
@@ -289,3 +289,4 @@ Deep-fallback does provide Typescript support. However, there are too many dynam
 [proxy-url]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 [downloads-image]: https://img.shields.io/npm/dm/deep-fallback
 [coverage-badge]: https://img.shields.io/badge/Coverage-100%25-green.png
+[vulnerabilities-badge]: https://img.shields.io/snyk/vulnerabilities/npm/deep-fallback
