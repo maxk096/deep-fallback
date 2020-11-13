@@ -2,7 +2,7 @@
 
 Deep-fallback makes work with fallbacks enjoyable. Deep-fallback is a tiny library, that removes the handling of fallbacks and facilitates their usage on nested objects.
 
-[![License][license-image]][license-url] [![Downloads][downloads-image]][downloads-url] ![Coverage 100][coverage-badge]
+[![License][license-image]][license-url] [![Downloads][downloads-image]][downloads-url] ![Coverage 100](coverage-badge)
 
 ## Install
 
