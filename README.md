@@ -2,7 +2,7 @@
 
 Deep-fallback makes work with fallbacks enjoyable. Deep-fallback is a tiny library, that removes the handling of fallbacks and facilitates their usage on nested objects.
 
-[![License][license-image]][license-url] [![Downloads][downloads-image]][downloads-url]
+[![License][license-image]][license-url] [![Downloads][downloads-image]][downloads-url] ![Coverage 100][coverage-badge] ![Vulnerabilities][vulnerabilities-badge]
 
 ## Install
 
@@ -90,7 +90,7 @@ First, `createFallback` wraps a `target` in Proxy and listens to property access
 
 We will continue wrapping properties you access, until we encounter a primitive value which cannot be wrapped in Proxy. 
 
-By default, if a property does not exist or is set to `undefined`, fallback will triggered. This can be overridden using `options.shouldFallback`.
+By default, if a property does not exist or is set to `undefined`, fallback will be triggered. This can be overridden using `options.shouldFallback`.
 
 #### `target: any`
 
@@ -118,7 +118,7 @@ console.log(fallback); // <~ proxied `fallbackValue`
 
 #### `options.shouldFallback?: (value, target, path) => boolean`
 
-A function, which decides whether fallback should be applied or not. It will be called whenever a property path you want to access either equals to `undefined` or does not exist. By default, it will fallback if the value is set to `undefined` or does not exist.
+A function, which decides whether fallback should be applied or not. It will be called whenever you get a property. By default, it will fallback if the `value` is set to `undefined` or does not exist.
 
 **Note:** If a `value` is primitive, and you return `false`, which tells us to use the `value` as the next `target`. Then, the `target` will be returned without proxying, because it is not an object, and fallback **will not work**.
 
@@ -288,3 +288,5 @@ Deep-fallback does provide Typescript support. However, there are too many dynam
 [downloads-url]: http://npm-stat.com/charts.html?package=deep-fallback
 [proxy-url]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 [downloads-image]: https://img.shields.io/npm/dm/deep-fallback
+[coverage-badge]: https://img.shields.io/badge/Coverage-100%25-green.png
+[vulnerabilities-badge]: https://img.shields.io/snyk/vulnerabilities/npm/deep-fallback

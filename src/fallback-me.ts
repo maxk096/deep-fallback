@@ -23,7 +23,7 @@ const fallbackMe = (fallback: FallbackBase): any => {
     return targetValue;
   }
 
-  const proxy = new Proxy(targetValue as object, {
+  const proxy = new Proxy(targetValue as Record<string, unknown>, {
     get(getTarget, prop): any {
       const nextPath = [...path, prop];
       const nextFallbacks = [...fallbacks];

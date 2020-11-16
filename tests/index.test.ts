@@ -243,7 +243,6 @@ describe('createFallback fn', () => {
 describe('createFallback.many fn', () => {
   it('When multiple values supplied as a fallback, should fallback properly', () => {
     const target = { a: { b: 1 } };
-    // prettier-ignore
     const fallbacks = [
       { p: { c: 2 } },
       { a: { p: 3 } },
@@ -252,16 +251,16 @@ describe('createFallback.many fn', () => {
       { e: { h: 6 } },
       { f: { q: { g: 7 } } },
       { s: 8 },
-    ]
+    ];
     const res = createFallback.many(target, fallbacks);
 
     expect(res.a.b).toBe(1);
-    expect(res.p?.c).toBe(2);
+    expect((res as any).p?.c).toBe(2);
     expect(res.a.p).toBe(3);
-    expect(res.p?.y).toBe(4);
+    expect((res.p as any)?.y).toBe(4);
     expect(res.a.c).toBe(5);
-    expect(res.e?.h).toBe(6);
-    expect(res.f?.q.g).toBe(7);
+    expect((res.e as any)?.h).toBe(6);
+    expect((res.f as any)?.q?.g).toBe(7);
     expect(res.s).toBe(8);
     expect((res.a as any).m).toBe(undefined);
   });
