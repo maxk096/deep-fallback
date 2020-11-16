@@ -1,6 +1,6 @@
 {
   "name": "deep-fallback",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Deep-fallback makes work with fallbacks enjoyable",
   "main": "./lib/src/index.js",
   "types": "./lib/src/index.d.ts",
