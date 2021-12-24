@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/null096/deep-fallback.git"
+    "url": "git+https://github.com/maxk096/deep-fallback.git"
   },
   "files": [
     "/lib/src",
@@ -40,9 +40,9 @@
   "author": "Max Kanaradze",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/null096/deep-fallback/issues"
+    "url": "https://github.com/maxk096/deep-fallback/issues"
   },
-  "homepage": "https://github.com/null096/deep-fallback#readme",
+  "homepage": "https://github.com/maxk096/deep-fallback#readme",
   "devDependencies": {
     "@types/is-object": "1.0.1",
     "@types/jest": "26.0.15",

@@ -279,7 +279,7 @@ Deep-fallback does provide Typescript support. However, there are too many dynam
 
 **Max Kanaradze**
 
-[GitHub Profile](https://github.com/null096)
+[GitHub Profile](https://github.com/maxk096)
 
 #### MIT Licensed
 
