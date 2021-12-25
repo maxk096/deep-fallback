@@ -102,7 +102,7 @@ A value, which will be used as a fallback. In case, if a `target` does not have 
 
 #### `options.fallbackImmediately?: boolean`
 
-A boolean value, which defines whether fallback will be immediately applied or not. If set to `true`, in the moment of `createFallback` being called `options.shouldFallback` will be called with a `target` immediately. It may be useful when you are not sure if a `target` exists, and if it does not, we can use a `fallback` value insted. Default value is set to `false`.
+A boolean value, which defines whether fallback will be immediately applied or not. If set to `true`, in the moment of `createFallback` being called `options.shouldFallback` will be called with a `target` immediately. It may be useful when you are not sure if a `target` exists, and if it does not, we can use a `fallback` value instead. Default value is set to `false`.
 
 ```js 
 import createFallback from 'deep-fallback'
