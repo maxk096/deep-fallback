@@ -61,6 +61,47 @@ const fallbackMe = (fallback: FallbackBase): any => {
       });
       return fallbackMe(nextFallback);
     },
+    ownKeys(target) {
+      const allFallbackKeys = fallbacks.reduce<Array<string | symbol>>(
+        (result, currentFallback) => {
+          if (!currentFallback || typeof currentFallback !== 'object') {
+            return result;
+          }
+
+          const currentFallbackPropValue = path.length
+            ? get(currentFallback, path)
+            : currentFallback;
+
+          if (currentFallbackPropValue) {
+            const currentKeys = Object.keys(currentFallbackPropValue);
+
+            for (const key of currentKeys) {
+              if (!result.includes(key)) {
+                result.push(key);
+              }
+            }
+          }
+
+          return result;
+        },
+        Reflect.ownKeys(target)
+      );
+
+      return allFallbackKeys;
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      const propertyDescriptor = Object.getOwnPropertyDescriptor(target, prop);
+
+      if (propertyDescriptor) {
+        return propertyDescriptor;
+      }
+
+      return {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      };
+    },
   });
 
   return proxy;

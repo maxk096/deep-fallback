@@ -107,6 +107,34 @@ describe('createFallback fn', () => {
     }).not.toThrow();
   });
 
+  it('Object.keys should work properly', () => {
+    const target = { a: [1, 2, 3], c: [100, 200, 300] };
+    const fallback = { a: [1, 2, 3, 4], b: [4, 5, 6], d: { foo: 'bar' } };
+    const res = createFallback(target, fallback);
+
+    expect(() => {
+      Object.keys(res);
+      Object.keys({ ...res });
+      Object.entries(res).map((key, num) => `${key},${num}`);
+      Object.entries(res.b).map((key, num) => `${key},${num}`);
+      Object.entries(res.c).map((key, num) => `${key},${num}`);
+    }).not.toThrow();
+
+    expect(Object.keys(res).sort()).toStrictEqual(['a', 'b', 'c', 'd']);
+    expect(Object.keys(res.a)).toStrictEqual(['0', '1', '2', '3']);
+    expect(Object.keys(res.b)).toStrictEqual(['0', '1', '2']);
+    expect(Object.keys(res.c)).toStrictEqual(['0', '1', '2']);
+    expect({ ...res }).toEqual({
+      a: [1, 2, 3], // still, a[3] === 4, as fallback proxy works
+      b: [4, 5, 6],
+      c: [100, 200, 300],
+      d: { foo: 'bar' },
+    });
+    expect([...res.c]).toStrictEqual([100, 200, 300]);
+    expect({ ...res.c }).toEqual({ '0': 100, '1': 200, '2': 300 });
+    expect({ ...res.d }).toEqual({ foo: 'bar' });
+  });
+
   describe('Fallback options', () => {
     it('With fallbackImmediately option and undefined target, should call shouldFallback fn and fallback immediatly', () => {
       const target = undefined;
@@ -263,6 +291,49 @@ describe('createFallback.many fn', () => {
     expect((res.f as any)?.q?.g).toBe(7);
     expect(res.s).toBe(8);
     expect((res.a as any).m).toBe(undefined);
+  });
+
+  it('When multiple values supplied as a fallback, Object.keys should work properly', () => {
+    const target = { a: { b: 1 } };
+    const fallbacks = [
+      { p: { c: 2 } },
+      { a: { p: 3 } },
+      { p: { y: 4 } },
+      { a: { c: 5 } },
+      { e: { h: 6 } },
+      { f: { q: { g: 7 } } },
+      { s: 8 },
+    ];
+    const res = createFallback.many(target, fallbacks);
+
+    expect(() => {
+      Object.keys(res);
+      Object.keys({ ...res });
+      Object.entries(res).map((key, num) => `${key},${num}`);
+    }).not.toThrow();
+
+    expect(Object.keys(res).sort()).toStrictEqual(['a', 'e', 'f', 'p', 's']);
+    expect(Object.keys(res.a)).toStrictEqual(['b', 'p', 'c']);
+    expect({ ...res }).toEqual({
+      a: {
+        b: 1,
+        p: 3,
+        c: 5,
+      },
+      p: {
+        c: 2,
+        y: 4,
+      },
+      e: {
+        h: 6,
+      },
+      f: {
+        q: {
+          g: 7,
+        },
+      },
+      s: 8,
+    });
   });
 
   it('When target value detached, should work properly', () => {
