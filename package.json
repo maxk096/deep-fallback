@@ -11,7 +11,7 @@
     "validate": "npm run lint && npm test",
     "clean": "rimraf lib",
     "prepublishOnly": "npm run validate && npm run clean && tsc",
-    "prepare": "husky install"
+    "prepare": "npm install && husky install && npm run clean && tsc"
   },
   "repository": {
     "type": "git",
