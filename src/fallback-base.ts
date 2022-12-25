@@ -25,6 +25,9 @@ interface FallbackBaseConstructorProps<T, F> {
   path?: PathType;
 }
 
+export const defaultShouldFallback = (v: unknown): boolean => v === undefined;
+export const defaultNoFallbackValue = (): unknown => undefined;
+
 export class FallbackBase<T = unknown, F = unknown> {
   readonly currentTarget: T;
   readonly fallbacks: F[];
@@ -40,8 +43,8 @@ export class FallbackBase<T = unknown, F = unknown> {
     path = [],
   }: FallbackBaseConstructorProps<T, F>) {
     const {
-      shouldFallback = (v: unknown): boolean => v === undefined,
-      noFallbackValue = (): unknown => undefined,
+      shouldFallback = defaultShouldFallback,
+      noFallbackValue = defaultNoFallbackValue,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onNoFallback = (): void => {},
       fallbackImmediately = false,

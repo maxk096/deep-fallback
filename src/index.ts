@@ -1,4 +1,9 @@
 import { createFallback } from './fallback-me';
 
-export { PathType, FallbackOptions } from './fallback-base';
+export {
+  PathType,
+  FallbackOptions,
+  defaultNoFallbackValue,
+  defaultShouldFallback,
+} from './fallback-base';
 export default createFallback;
