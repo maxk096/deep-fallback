@@ -1,4 +1,4 @@
-import createFallback, { FallbackOptions } from '../src';
+import createFallback, { type FallbackOptions } from '../src';
 
 describe('createFallback fn', () => {
   it('When a target is non-fallbackable, should return it immediately', () => {
@@ -107,7 +107,7 @@ describe('createFallback fn', () => {
     }).not.toThrow();
   });
 
-  it('Object.keys should work properly', () => {
+  it('Objects can be iterated with fallbacks', () => {
     const target = { a: [1, 2, 3], c: [100, 200, 300] };
     const fallback = { a: [1, 2, 3, 4], b: [4, 5, 6], d: { foo: 'bar' } };
     const res = createFallback(target, fallback);
@@ -131,8 +131,8 @@ describe('createFallback fn', () => {
       d: { foo: 'bar' },
     });
     expect([...res.c]).toStrictEqual([100, 200, 300]);
-    expect({ ...res.c }).toEqual({ '0': 100, '1': 200, '2': 300 });
-    expect({ ...res.d }).toEqual({ foo: 'bar' });
+    expect({ ...res.c }).toStrictEqual({ '0': 100, '1': 200, '2': 300 });
+    expect({ ...res.d }).toStrictEqual({ foo: 'bar' });
   });
 
   describe('Fallback options', () => {
@@ -293,7 +293,78 @@ describe('createFallback.many fn', () => {
     expect((res.a as any).m).toBe(undefined);
   });
 
-  it('When multiple values supplied as a fallback, Object.keys should work properly', () => {
+  it('Object.getOwnPropertyDescriptor(s) should return the first closest property descriptor(s)', () => {
+    const target = { a: { b: [1, 2] } };
+    const symbolKey = Symbol();
+    const fallback1 = { a: 3, c: { d: 4 } };
+    const fallback2 = { e: [6] };
+    const fallbacks = [fallback1, fallback2];
+    Object.defineProperty(fallback1, symbolKey, {
+      // JS will throw when a property is not configurable, but exists on a fallback target.
+      configurable: true,
+      enumerable: false,
+      value: 5,
+      writable: false,
+    });
+    const res = createFallback.many(target, fallbacks);
+
+    expect(Object.getOwnPropertyDescriptor(res, 'notExistentProperty')).toBe(undefined);
+    expect(Object.getOwnPropertyDescriptor(res.a, 'notExistentProperty')).toBe(undefined);
+    expect(Object.getOwnPropertyDescriptor(res, 'a')).toStrictEqual({
+      configurable: true,
+      enumerable: true,
+      value: { b: [1, 2] },
+      writable: true,
+    });
+    expect(Object.getOwnPropertyDescriptor(res.a, 'b')).toStrictEqual({
+      configurable: true,
+      enumerable: true,
+      value: [1, 2],
+      writable: true,
+    });
+    expect(Object.getOwnPropertyDescriptor(res, 'c')).toStrictEqual({
+      configurable: true,
+      enumerable: true,
+      value: { d: 4 },
+      writable: true,
+    });
+    expect(Object.getOwnPropertyDescriptor(res, symbolKey)).toStrictEqual({
+      configurable: true,
+      enumerable: false,
+      value: 5,
+      writable: false,
+    });
+    expect(Object.getOwnPropertyDescriptor(res, 'e')).toStrictEqual({
+      configurable: true,
+      enumerable: true,
+      value: [6],
+      writable: true,
+    });
+
+    expect(Object.getOwnPropertyDescriptors(res)).toStrictEqual({
+      a: {
+        value: { b: [1, 2] },
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      },
+      c: {
+        value: { d: 4 },
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      },
+      e: {
+        value: [6],
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      },
+      [symbolKey]: { value: 5, writable: false, enumerable: false, configurable: true },
+    });
+  });
+
+  it('When multiple values supplied as a fallback, objects can be iterated with fallbacks', () => {
     const target = { a: { b: 1 } };
     const fallbacks = [
       { p: { c: 2 } },
@@ -314,7 +385,7 @@ describe('createFallback.many fn', () => {
 
     expect(Object.keys(res).sort()).toStrictEqual(['a', 'e', 'f', 'p', 's']);
     expect(Object.keys(res.a)).toStrictEqual(['b', 'p', 'c']);
-    expect({ ...res }).toEqual({
+    expect({ ...res }).toStrictEqual({
       a: {
         b: 1,
         p: 3,
