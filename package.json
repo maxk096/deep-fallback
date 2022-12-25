@@ -11,15 +11,17 @@
     "validate": "npm run lint && npm test",
     "clean": "rimraf lib",
     "prepublishOnly": "npm run validate && npm run clean && tsc",
-    "prepare": "husky install && npm run clean && tsc"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maxk096/deep-fallback.git"
   },
+  "engines": {
+    "node": ">=12"
+  },
   "files": [
     "/lib/src",
-    "src",
     "LICENSE",
     "README.md"
   ],
