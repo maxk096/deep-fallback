@@ -1,7 +1,9 @@
-import get from 'lodash.get';
+import lodashGet from 'lodash.get';
 import isObject from 'is-object';
 import isRegExp from 'is-regexp';
 import { FallbackBase, FallbackOptions } from './fallback-base';
+
+type ObjectTarget = Record<string, any>;
 
 const isPromise = (o: unknown): boolean => o instanceof Promise;
 
@@ -24,10 +26,10 @@ const fallbackMe = (fallback: FallbackBase): any => {
   }
 
   const proxy = new Proxy(targetValue as Record<string, unknown>, {
-    get(getTarget, prop): any {
+    get(_target, prop): any {
       const nextPath = [...path, prop];
       const nextFallbacks = [...fallbacks];
-      const propValue = get(getTarget, prop);
+      const propValue = lodashGet(targetValue, prop);
 
       if (!shouldFallback(propValue, currentTarget, nextPath)) {
         const nextFallback = new FallbackBase({
@@ -39,16 +41,16 @@ const fallbackMe = (fallback: FallbackBase): any => {
         return fallbackMe(nextFallback);
       }
 
-      const nextTargetIndex = fallbacks.findIndex((fallback) => {
-        const fallbackValue = get(fallback, nextPath);
-        return !shouldFallback(fallbackValue, fallback, nextPath);
+      const nextTargetIndex = fallbacks.findIndex((currFallback) => {
+        const fallbackValue = lodashGet(currFallback, nextPath);
+        return !shouldFallback(fallbackValue, currFallback, nextPath);
       });
       if (nextTargetIndex === -1) {
         onNoFallback(nextPath, currentTarget, propValue);
         return noFallbackValue(nextPath, currentTarget, propValue);
       }
       const nextTarget = fallbacks[nextTargetIndex];
-      const nextTargetValue = get(nextTarget, nextPath);
+      const nextTargetValue = lodashGet(nextTarget, nextPath);
       const amountOfFallbacksToDelete = nextTargetIndex + 1;
       nextFallbacks.splice(0, amountOfFallbacksToDelete);
 
@@ -60,6 +62,54 @@ const fallbackMe = (fallback: FallbackBase): any => {
         options,
       });
       return fallbackMe(nextFallback);
+    },
+    ownKeys() {
+      const allFallbackKeys = fallbacks.reduce<Array<string | symbol>>(
+        (result, currentFallback) => {
+          if (!isObject(currentFallback)) {
+            return result;
+          }
+
+          const currentFallbackPropValue = path.length
+            ? lodashGet(currentFallback, path)
+            : currentFallback;
+
+          if (isObject(currentFallbackPropValue)) {
+            // Reflect.ownKeys will return all possible object keys(see js docs).
+            // The key filtering will occur in getOwnPropertyDescriptor trap.
+            const currentKeys = Reflect.ownKeys(currentFallbackPropValue as ObjectTarget);
+
+            for (const key of currentKeys) {
+              if (!result.includes(key)) {
+                result.push(key);
+              }
+            }
+          }
+
+          return result;
+        },
+        Reflect.ownKeys(targetValue as ObjectTarget)
+      );
+      return allFallbackKeys;
+    },
+    getOwnPropertyDescriptor(_target, prop) {
+      // Find and return the first closest property descriptor.
+      // This method is called either by consumers or by JS after `ownKeys` trap returns.
+      const allTargets = [currentTarget, ...fallbacks];
+      const foundTarget = allTargets.find((currTarget) => {
+        const currentFallbackPropValue = path.length ? lodashGet(currTarget, path) : currTarget;
+        return (
+          isObject(currentFallbackPropValue) &&
+          (currentFallbackPropValue as ObjectTarget).hasOwnProperty(prop)
+        );
+      });
+      const foundTargetPathValue = path.length ? lodashGet(foundTarget, path) : foundTarget;
+      // Reflect.getOwnPropertyDescriptor would throw if called with a non-object.
+      if (!isObject(foundTargetPathValue)) {
+        return undefined;
+      }
+      // This will throw when a property is not configurable and exists on a fallback, but not on the currentTarget.
+      return Reflect.getOwnPropertyDescriptor(foundTargetPathValue as ObjectTarget, prop);
     },
   });
 
